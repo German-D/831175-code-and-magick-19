@@ -1,7 +1,7 @@
 'use strict';
 
 function renderStatistics(ctx, names, times) {
-  var shadowCoordinate = 10; // Смещение подложки относительно белого прямоугольника
+  var SHADOW_COORDINATE = 10; // Смещение подложки относительно белого прямоугольника
   var CLOUD_X = 100; // Координата отрисовк облака
   var CLOUD_Y = 10; // Координата отрисовк облака
   var CLOUD_WIDTH = 500; // Ширина облака
@@ -10,21 +10,51 @@ function renderStatistics(ctx, names, times) {
   var GAP_WIDTH = 100; // Расстояние между стобцами
   var COLUMN_WIDTH = 50; // Ширина столбца
   var RESULT_HEIGHT = 90; // Высота результатов в цифрах
-  var maxTime = Math.max(times[0], times[1], times[2], times[3]); // Нахожу максимальное время в массиве
   var maxHeightStatistic = NAMES_HEIGHT - 100; // Максимальная высота столбца
+  var maxTime = getMaxOfArray(times); // Получаю максимальное значение из массива
   var proportion = maxHeightStatistic / maxTime; // Переменная для пропорции
+  var COLUMN_COORDINATE = CLOUD_X + COLUMN_WIDTH; // Отступ столбца по оси Х
   var randomNumber99;
   var i;
 
-  // Функция для отрисовки облачка с подложкой
-  function renderCloud(context, x, y, color) {
-    context.fillStyle = color;
-    context.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
+  // Нахожу максимальное время в массиве
+  function getMaxOfArray(numArray) {
+    return Math.max.apply(null, numArray);
+  }
+  // Функция для получения рандомного значения (максимум и минимум включаются)
+  function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // Вызываю функцию отрисовки облачка с подложкой
-  renderCloud(ctx, CLOUD_X + shadowCoordinate, CLOUD_Y + shadowCoordinate, 'rgba(0, 0, 0, 0.7)');
-  renderCloud(ctx, CLOUD_X, CLOUD_Y, 'white');
+  // Функция для отрисовки облочка с подложкой
+  function renderCloud(options) {
+    options.context.fillStyle = options.color;
+    options.context.fillRect(options.x,
+        options.y,
+        options.CLOUD_WIDTH,
+        options.CLOUD_HEIGHT);
+  }
+
+  // Вызываю функцию отрисовки облочка с подложкой
+  renderCloud({
+    context: ctx,
+    x: CLOUD_X + SHADOW_COORDINATE,
+    y: CLOUD_Y + SHADOW_COORDINATE,
+    color: 'rgba(0, 0, 0, 0.7)',
+    CLOUD_WIDTH: CLOUD_WIDTH,
+    CLOUD_HEIGHT: CLOUD_HEIGHT,
+  });
+
+  renderCloud({
+    context: ctx,
+    x: CLOUD_X,
+    y: CLOUD_Y,
+    color: 'white',
+    CLOUD_WIDTH: CLOUD_WIDTH,
+    CLOUD_HEIGHT: CLOUD_HEIGHT,
+  });
 
   // Пишу текст «Ура, вы победили!»
   ctx.fillStyle = 'black';
@@ -46,12 +76,18 @@ function renderStatistics(ctx, names, times) {
   for (i = 0; i < times.length; i++) {
     if (names[i] === 'Вы') {
       ctx.fillStyle = '#f00';
-      ctx.fillRect(CLOUD_X + COLUMN_WIDTH + i * GAP_WIDTH, NAMES_HEIGHT - times[i] * proportion, COLUMN_WIDTH, times[i] * proportion - 25);
+      ctx.fillRect(COLUMN_COORDINATE + i * GAP_WIDTH,
+          NAMES_HEIGHT - times[i] * proportion,
+          COLUMN_WIDTH,
+          times[i] * proportion - 25);
 
     } else {
-      randomNumber99 = Math.floor(Math.random() * 100);
-      ctx.fillStyle = 'hsl(240,100%,' + randomNumber99 + '%)';
-      ctx.fillRect(CLOUD_X + COLUMN_WIDTH + i * GAP_WIDTH, NAMES_HEIGHT - times[i] * proportion, COLUMN_WIDTH, times[i] * proportion - 25);
+      randomNumber99 = getRandomIntInclusive(0, 100);
+      ctx.fillStyle = 'hsl(240,' + randomNumber99 + '%, 50%)';
+      ctx.fillRect(COLUMN_COORDINATE + i * GAP_WIDTH,
+          NAMES_HEIGHT - times[i] * proportion,
+          COLUMN_WIDTH,
+          times[i] * proportion - 25);
     }
   }
 }
