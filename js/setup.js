@@ -31,12 +31,12 @@ var secondNames = [
 ];
 
 var coatColors = [
-  'rgb (101, 137, 164)',
-  'rgb (241, 43, 107)',
-  'rgb (146, 100, 161)',
-  'rgb (56, 159, 117)',
-  'rgb (215, 210, 55)',
-  'rgb (0, 0, 0)',
+  'rgb(101, 137, 164)',
+  'rgb(241, 43, 107)',
+  'rgb(146, 100, 161)',
+  'rgb(56, 159, 117)',
+  'rgb(215, 210, 55)',
+  'rgb(0, 0, 0)',
 ];
 
 var eyesColors = [
@@ -59,13 +59,13 @@ for (var i = 1; i < 5; i++) {
   var secondNamePart = secondNames[getRandomIntInclusive(0, 7)];
   WizzardOptions.push({
     name: namePart + ' ' + secondNamePart,
-    coatColor: coatColors[getRandomIntInclusive(0, 5)],
-    eyesColor: eyesColors[getRandomIntInclusive(0, 4)]
+    coatColor: coatColors[getRandomIntInclusive(0, coatColors.length - 1)],
+    eyesColor: eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)]
   });
 }
 
-var renderWizard = function (wizards) {
-  var wizardElement = wizardsTemplate.cloneNode(true);
+var renderWizard = function (wizards, templateNode) {
+  var wizardElement = templateNode.cloneNode(true);
   wizardElement.querySelector('.setup-similar-label').textContent = wizards.name;
   wizardElement.querySelector('.wizard-coat').style.fill = wizards.coatColor;
   wizardElement.querySelector('.wizard-eyes').style.fill = wizards.eyesColor;
@@ -75,7 +75,7 @@ var renderWizard = function (wizards) {
 
 var fragment = document.createDocumentFragment();
 for (var k = 0; k < WizzardOptions.length; k++) {
-  fragment.appendChild(renderWizard(WizzardOptions[k]));
+  fragment.appendChild(renderWizard(WizzardOptions[k], wizardsTemplate));
 }
 
 setupTemplate.appendChild(fragment);
