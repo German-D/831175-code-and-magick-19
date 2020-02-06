@@ -11,6 +11,7 @@ var dom = {
   setupUserName: document.querySelector('.setup-user-name'),
   wizardCoat: document.querySelector('.setup-wizard .wizard-coat'),
   wizardEyes: document.querySelector('.setup-wizard .wizard-eyes'),
+  setupWizardAppearance: document.querySelectorAll('.setup-wizard-appearance input'),
   fireballWrap: document.querySelector('.setup-fireball-wrap'),
 };
 
@@ -130,11 +131,15 @@ var setupUserNameKeydownHandler = function (evt) {
 };
 
 var wizardCoatClickHandler = function () {
-  dom.wizardCoat.style.fill = coatColors[getRandomIntInclusive(0, coatColors.length - 1)];
+  var coatColorsRundom = coatColors[getRandomIntInclusive(0, coatColors.length - 1)];
+  dom.wizardCoat.style.fill = coatColorsRundom;
+  dom.setupWizardAppearance[0].value = coatColorsRundom;
 };
 
 var wizardEyesClickHandler = function () {
-  dom.wizardEyes.style.fill = eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)];
+  var eyesColorsRundom = eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)];
+  dom.wizardEyes.style.fill = eyesColorsRundom;
+  dom.setupWizardAppearance[1].value = eyesColorsRundom;
 };
 
 var fireballWrapClickHandler = function () {
