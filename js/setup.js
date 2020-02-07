@@ -1,11 +1,19 @@
 'use strict';
 
-var wizardsTemplate = document.querySelector('#similar-wizard-template').content;
-var setupTemplate = document.querySelector('.setup-similar-list');
-var setupBlock = document.querySelector('.setup-similar');
-
-var newBlock = document.querySelector('.setup');
-newBlock.classList.remove('hidden');
+var dom = {
+  wizardsTemplate: document.querySelector('#similar-wizard-template'),
+  setupTemplate: document.querySelector('.setup-similar-list'),
+  setupBlock: document.querySelector('.setup-similar'),
+  setup: document.querySelector('.setup'),
+  setupOpen: document.querySelector('.setup-open'),
+  setupClose: document.querySelector('.setup-close'),
+  setupOpenIcon: document.querySelector('.setup-open-icon'),
+  setupUserName: document.querySelector('.setup-user-name'),
+  wizardCoat: document.querySelector('.setup-wizard .wizard-coat'),
+  wizardEyes: document.querySelector('.setup-wizard .wizard-eyes'),
+  setupWizardAppearance: document.querySelectorAll('.setup-wizard-appearance input'),
+  fireballWrap: document.querySelector('.setup-fireball-wrap'),
+};
 
 var WizzardOptions = [];
 
@@ -27,7 +35,7 @@ var secondNames = [
   'Онопко',
   'Топольницкая',
   'Нионго',
-  'Ирвинг'
+  'Ирвинг',
 ];
 
 var coatColors = [
@@ -47,6 +55,14 @@ var eyesColors = [
   'green',
 ];
 
+var fireballColors = [
+  '#ee4830',
+  '#30a8ee',
+  '#5ce6c0',
+  '#e848d5',
+  '#e6e848',
+];
+
 // Функция получения случайного целого числа в заданном интервале. Максимум и минимум включаются
 function getRandomIntInclusive(min, max) {
   min = Math.ceil(min);
@@ -60,7 +76,7 @@ for (var i = 1; i < 5; i++) {
   WizzardOptions.push({
     name: namePart + ' ' + secondNamePart,
     coatColor: coatColors[getRandomIntInclusive(0, coatColors.length - 1)],
-    eyesColor: eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)]
+    eyesColor: eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)],
   });
 }
 
@@ -75,9 +91,73 @@ var renderWizard = function (wizards, templateNode) {
 
 var fragment = document.createDocumentFragment();
 for (var k = 0; k < WizzardOptions.length; k++) {
-  fragment.appendChild(renderWizard(WizzardOptions[k], wizardsTemplate));
+  fragment.appendChild(renderWizard(WizzardOptions[k], dom.wizardsTemplate.content));
 }
 
-setupTemplate.appendChild(fragment);
+dom.setupTemplate.appendChild(fragment);
 
-setupBlock.classList.remove('hidden');
+dom.setupBlock.classList.remove('hidden');
+
+var setupOpenClickHandler = function () {
+  dom.setup.classList.remove('hidden');
+};
+
+var setupOpenIconKeydownHandler = function (evt) {
+  if (evt.key === 'Enter') {
+    dom.setup.classList.remove('hidden');
+  }
+};
+
+var setupCloseClickHandler = function () {
+  dom.setup.classList.add('hidden');
+};
+
+var setupCloseKeydownEnterHandler = function (evt) {
+  if (evt.key === 'Enter') {
+    dom.setup.classList.add('hidden');
+  }
+};
+
+var setupCloseKeydownHandler = function (evt) {
+  if (evt.key === 'Escape') {
+    dom.setup.classList.add('hidden');
+  }
+};
+
+var setupUserNameKeydownHandler = function (evt) {
+  if (evt.key === 'Escape') {
+    evt.stopPropagation();
+  }
+};
+
+var wizardCoatClickHandler = function () {
+  var coatColorsRundom = coatColors[getRandomIntInclusive(0, coatColors.length - 1)];
+  dom.wizardCoat.style.fill = coatColorsRundom;
+  dom.setupWizardAppearance[0].value = coatColorsRundom;
+};
+
+var wizardEyesClickHandler = function () {
+  var eyesColorsRundom = eyesColors[getRandomIntInclusive(0, eyesColors.length - 1)];
+  dom.wizardEyes.style.fill = eyesColorsRundom;
+  dom.setupWizardAppearance[1].value = eyesColorsRundom;
+};
+
+var fireballWrapClickHandler = function () {
+  var fireballColor = fireballColors[getRandomIntInclusive(0, fireballColors.length - 1)];
+  dom.fireballWrap.style.backgroundColor = fireballColor;
+  dom.fireballWrap.querySelector('input').value = fireballColor;
+};
+
+document.addEventListener('keydown', setupCloseKeydownHandler); // Esc закрывает форму
+
+dom.setupOpen.addEventListener('click', setupOpenClickHandler); // Открываю форму по иконке
+dom.setupOpenIcon.addEventListener('keydown', setupOpenIconKeydownHandler); // По Enter открываю форму
+
+dom.setupClose.addEventListener('click', setupCloseClickHandler); // Закрываю форму на крестике
+dom.setupClose.addEventListener('keydown', setupCloseKeydownEnterHandler); // По Enter на крестике закрываю форму
+
+dom.setupUserName.addEventListener('keydown', setupUserNameKeydownHandler); // Esc не закрыват форму на поле ввода
+
+dom.wizardCoat.addEventListener('click', wizardCoatClickHandler); // Меняю цвет плаща по клику
+dom.wizardEyes.addEventListener('click', wizardEyesClickHandler); // Меняю цвет глаз по клику
+dom.fireballWrap.addEventListener('click', fireballWrapClickHandler); // Меняю цвет файрбола по клику
