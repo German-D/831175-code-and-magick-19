@@ -63,4 +63,6 @@
   };
 
   setupUserName.addEventListener('keydown', setupUserNameKeydownHandler);
+
+  window.utils = setup;
 })();
